@@ -2,6 +2,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.function.Supplier;
 import org.junit.Test;
 
@@ -65,7 +66,7 @@ public class SetTests {
   }
 
   @Test
-  public void testMin() {
+  public void testMinMax() {
     assertEquals(1, Sets.empty().adjoin(1).min());
     assertEquals(1, Sets.empty().adjoin(1).max());
 
@@ -74,6 +75,99 @@ public class SetTests {
 
     assertEquals(2, Sets.empty().adjoin(2).adjoin(1).max());
     assertEquals(1, Sets.empty().adjoin(2).adjoin(1).min());
+
+    Sets s0 = Sets.empty();
+    for (int i = 0; i < 3; i++) {
+      s0 = s0.adjoin(i);
+    }
+    //assertEquals(0, s0.min());
+    //assertEquals(99, s0.max());
+  }
+
+  @Test
+  public void testEquals() {
+
+    Sets s1 =
+        new Sets(
+            Sets.empty(),
+            new Sets(
+                new Sets(Sets.empty(), Sets.empty(), 2, 1, Sets.Color.RED),
+                Sets.empty(),
+                3,
+                2, Sets.Color.RED),
+            1,
+            3,
+            Sets.Color.RED
+        );
+
+    Sets s2 = Sets.empty();
+    Sets s3 = Sets.empty();
+    for(int i = 0; i < 100; i++) {
+      s2 = s2.adjoin(i);
+    }
+    for(int i = 99; i >= 0; i--) {
+      s3 = s3.adjoin(i);
+    }
+    assertEquals(true, Sets.empty().equals(Sets.empty()));
+    assertEquals(false, Sets.empty().equals(Sets.empty().adjoin(1)));
+    assertEquals(true, Sets.empty().adjoin(1).equals(Sets.empty().adjoin(1)));
+    assertEquals(false, Sets.empty().adjoin(1).equals(Sets.empty().adjoin(2)));
+    assertEquals(true,
+        Sets.empty().adjoin(1).adjoin(2).equals(
+        Sets.empty().adjoin(2).adjoin(1))
+    );
+    assertEquals(true, s1.adjoin(2).equals(s1.adjoin(1)));
+    assertEquals(true, s2.equals(s3));
+    assertEquals(true, s2.adjoin(75).equals(s3.adjoin(75)));
+    assertEquals(true, s2.adjoin(75).equals(s3.adjoin(74)));
+    assertEquals(false, s2.adjoin(100).equals(s3.adjoin(74)));
+    assertEquals(true, s2.adjoin(100).equals(s3.adjoin(100)));
+  }
+
+  @Test
+  public void testHashCode() {
+    Sets empty = Sets.empty();
+
+    Sets s1 = empty.adjoin(1);
+    Sets s2 = empty.adjoin(2);
+    Sets s3 = empty.adjoin(1).adjoin(2);
+    Sets s4 = empty.adjoin(2).adjoin(1);
+
+    Sets s0To100 = Sets.empty();
+    Sets s100To0 = Sets.empty();
+    for(int i = 0; i < 100; i++) {
+      s0To100 = s0To100.adjoin(i);
+    }
+    for(int i = 99; i >= 0; i--) {
+      s100To0 = s100To0.adjoin(i);
+    }
+
+    assertEquals(empty.hashCode(), empty.hashCode());
+    //assertNotEquals(empty.hashCode(), s1.hashCode());
+    assertNotEquals(empty.hashCode(), s2.hashCode());
+    assertNotEquals(s1.hashCode(), s2.hashCode());
+    assertNotEquals(s1.hashCode(), s3.hashCode());
+    assertNotEquals(s2.hashCode(), s3.hashCode());
+    assertEquals(s3.hashCode(), s3.hashCode());
+    assertEquals( s4.hashCode(), s3.hashCode());
+
+    assertEquals(s0To100.hashCode(), s100To0.hashCode());
+
+
+  }
+
+  @Test
+  public void testToString() {
+    Sets s2 = Sets.empty();
+    Sets s3 = Sets.empty();
+    for(int i = 0; i < 100; i++) {
+      s2 = s2.adjoin(i);
+    }
+    for(int i = 99; i >= 0; i--) {
+      s3 = s3.adjoin(i);
+    }
+
+    assertEquals(s2.toString(), s3.toString());
   }
 
   @Test
@@ -90,7 +184,7 @@ public class SetTests {
         Sets.Color.RED
     ), Sets.empty(), zval, 3, Sets.Color.BLACK);
 
-    Sets b1 = Sets.balanceCase1(s1);
+    Sets b1 = Sets.balance(s1);
 
     assertEquals((int)b1.val, yval);
     assertEquals(b1.color, Sets.Color.RED);
@@ -121,7 +215,7 @@ public class SetTests {
         ),
         Sets.empty(), zval, 3, Sets.Color.BLACK);
 
-    Sets b1 = Sets.balanceCase2(s1);
+    Sets b1 = Sets.balance(s1);
 
     assertEquals((int)b1.val, yval);
     assertEquals(b1.color, Sets.Color.RED);
@@ -154,7 +248,7 @@ public class SetTests {
             Sets.Color.RED
         );
 
-    Sets b1 = Sets.balanceCase3(s1);
+    Sets b1 = Sets.balance(s1);
 
     assertEquals((int)b1.val, yval);
     assertEquals(b1.color, Sets.Color.RED);
@@ -188,7 +282,7 @@ public class SetTests {
             Sets.Color.RED
         );
 
-    Sets b1 = Sets.balanceCase4(s1);
+    Sets b1 = Sets.balance(s1);
 
     assertEquals((int)b1.val, yval);
     assertEquals(b1.color, Sets.Color.RED);

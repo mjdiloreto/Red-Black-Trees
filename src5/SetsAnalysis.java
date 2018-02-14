@@ -50,19 +50,57 @@ public class SetsAnalysis {
     }
 
     Sets s0 = Sets.empty();
-    for(int i = 0; i < 7; i++) {
+    for(int i = 0; i < 6; i++) {
       s0 = s0.adjoin(i);
     }
 
-    Queue<Sets> toCheck = new LinkedList<>();
-    toCheck.add(s0);
+    Sets empty = Sets.empty();
 
-    while(toCheck.peek() != null) {
-      Sets consider = toCheck.remove();
-      System.out.println(consider);
-      toCheck.add(consider.left);
-      toCheck.add(consider.right);
+    Sets s1 = empty.adjoin(1);
+    Sets s2 = empty.adjoin(2);
+    Sets s3 = empty.adjoin(1).adjoin(2);
+    Sets s4 = empty.adjoin(2).adjoin(1);
+
+    Sets s0To100 = Sets.empty();
+    Sets s100To0 = Sets.empty();
+    for(int i = 0; i < 100; i++) {
+      s0To100 = s0To100.adjoin(i);
     }
+    for(int i = 99; i >= 0; i--) {
+      s100To0 = s100To0.adjoin(i);
+    }
+
+    System.out.println(empty.hashCode());
+    System.out.println(s1.hashCode());
+    System.out.println(s2.hashCode());
+    System.out.println(s3.hashCode());
+    System.out.println(s4.hashCode());
+    System.out.println(s0To100.hashCode());
+    System.out.println(s100To0.hashCode());
+
+
+
+//    for(int i = 0; i < 100; i ++) {
+//      System.out.print(i);
+//      double A = Sets.hashConstant * i;
+//      //System.out.println(Math.pow(2, 30));
+//      System.out
+//          .println(" " + Sets.hashSlots * (A - Math.floor(A)));//(int) Math.floor(Sets.hashSlots *
+//      // (A - Math.floor
+//      // (A)))); // prime number
+//      // > 1
+//      // billion
+//    }
+//
+//    Queue<Sets> toCheck = new LinkedList<>();
+//    toCheck.add(s0);
+//
+//    while(toCheck.peek() != null) {
+//      Sets consider = toCheck.remove();
+//      System.out.println(consider);
+//      toCheck.add(consider.left);
+//      toCheck.add(consider.right);
+//    }
 
 
 //    boolean isL = true;
