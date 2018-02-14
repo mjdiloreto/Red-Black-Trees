@@ -75,4 +75,131 @@ public class SetTests {
     assertEquals(2, Sets.empty().adjoin(2).adjoin(1).max());
     assertEquals(1, Sets.empty().adjoin(2).adjoin(1).min());
   }
+
+  @Test
+  public void testBalance() {
+    int xval = 1;
+    int yval = 2;
+    int zval = 3;
+
+    Sets s1 = new Sets(new Sets(
+        new Sets(Sets.empty(), Sets.empty(), xval, 1, Sets.Color.RED),
+        Sets.empty(),
+        yval,
+        2,
+        Sets.Color.RED
+    ), Sets.empty(), zval, 3, Sets.Color.BLACK);
+
+    Sets b1 = Sets.balanceCase1(s1);
+
+    assertEquals((int)b1.val, yval);
+    assertEquals(b1.color, Sets.Color.RED);
+    assertEquals(b1.size, 3);
+    assertEquals((int)b1.left.val, xval);
+    assertEquals(b1.left.size, 1);
+    assertEquals(b1.left.color, Sets.Color.BLACK);
+
+    assertEquals((int)b1.right.val, zval);
+    assertEquals(b1.right.size, 1);
+    assertEquals(b1.right.color, Sets.Color.BLACK);
+
+  }
+
+  @Test
+  public void testBalance2() {
+    int xval = 1;
+    int yval = 2;
+    int zval = 3;
+
+    Sets s1 = new Sets(
+        new Sets(
+          Sets.empty(),
+          new Sets(Sets.empty(), Sets.empty(), yval, 1, Sets.Color.RED),
+          xval,
+          2,
+          Sets.Color.RED
+        ),
+        Sets.empty(), zval, 3, Sets.Color.BLACK);
+
+    Sets b1 = Sets.balanceCase2(s1);
+
+    assertEquals((int)b1.val, yval);
+    assertEquals(b1.color, Sets.Color.RED);
+    assertEquals(b1.size, 3);
+    assertEquals((int)b1.left.val, xval);
+    assertEquals(b1.left.size, 1);
+    assertEquals(b1.left.color, Sets.Color.BLACK);
+
+    assertEquals((int)b1.right.val, zval);
+    assertEquals(b1.right.size, 1);
+    assertEquals(b1.right.color, Sets.Color.BLACK);
+
+  }
+
+  @Test
+  public void testBalance3() {
+    int xval = 1;
+    int yval = 2;
+    int zval = 3;
+
+    Sets s1 =
+        new Sets(
+            Sets.empty(),
+            new Sets(Sets.empty(),
+                  new Sets(Sets.empty(), Sets.empty(), zval, 1, Sets.Color.RED),
+                  yval,
+                  2, Sets.Color.RED),
+            xval,
+            3,
+            Sets.Color.RED
+        );
+
+    Sets b1 = Sets.balanceCase3(s1);
+
+    assertEquals((int)b1.val, yval);
+    assertEquals(b1.color, Sets.Color.RED);
+    assertEquals(b1.size, 3);
+    assertEquals((int)b1.left.val, xval);
+    assertEquals(b1.left.size, 1);
+    assertEquals(b1.left.color, Sets.Color.BLACK);
+
+    assertEquals((int)b1.right.val, zval);
+    assertEquals(b1.right.size, 1);
+    assertEquals(b1.right.color, Sets.Color.BLACK);
+
+  }
+
+  @Test
+  public void testBalance4() {
+    int xval = 1;
+    int yval = 2;
+    int zval = 3;
+
+    Sets s1 =
+        new Sets(
+            Sets.empty(),
+            new Sets(
+                new Sets(Sets.empty(), Sets.empty(), yval, 1, Sets.Color.RED),
+                Sets.empty(),
+                zval,
+                2, Sets.Color.RED),
+            xval,
+            3,
+            Sets.Color.RED
+        );
+
+    Sets b1 = Sets.balanceCase4(s1);
+
+    assertEquals((int)b1.val, yval);
+    assertEquals(b1.color, Sets.Color.RED);
+    assertEquals(b1.size, 3);
+    assertEquals((int)b1.left.val, xval);
+    assertEquals(b1.left.size, 1);
+    assertEquals(b1.left.color, Sets.Color.BLACK);
+
+    assertEquals((int)b1.right.val, zval);
+    assertEquals(b1.right.size, 1);
+    assertEquals(b1.right.color, Sets.Color.BLACK);
+
+  }
 }

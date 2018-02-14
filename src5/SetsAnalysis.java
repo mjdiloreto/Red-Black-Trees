@@ -1,4 +1,8 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.function.Supplier;
 
 public class SetsAnalysis {
@@ -16,17 +20,19 @@ public class SetsAnalysis {
   }
 
   public static void main(String[] args) {
-    ArrayList<Long> times = new ArrayList<>();
     int size0 = 100;
     int size1 = 1000;
     int size2 = 10000;
     int size3 = 100000;
+    //int size4 = 1000000;
+    //int size5 = 10000000;
 
-    int iter = 1000;
+    int iter = 100;
 
-    int[] sizes = {size0, size1, size2, size3};
+    int[] sizes = {size0, size1, size2, size3};//, size4, size5};
 
     for (int k = 0; k < sizes.length; k++) {
+      ArrayList<Long> times = new ArrayList<>();
       int size = sizes[k];
       Set s0 = Sets.empty();
       for(int i = 0; i < size; i++) {
@@ -37,10 +43,38 @@ public class SetsAnalysis {
         long t = time(() -> finalS.contains(size));
         times.add(i, t);
       }
-      System.out.println("Avg of " + iter + " runs of size " + size + " was "
-          + times.stream()
-          .mapToLong(val -> val)
-          .average().getAsDouble());
+      System.out.println("Avg of " + iter + " runs of size " + size + " was " + times.toString());
+//          + times.stream()
+//          .mapToLong(val -> val)
+//          .average().getAsDouble());
     }
+
+    Sets s0 = Sets.empty();
+    for(int i = 0; i < 7; i++) {
+      s0 = s0.adjoin(i);
+    }
+
+    Queue<Sets> toCheck = new LinkedList<>();
+    toCheck.add(s0);
+
+    while(toCheck.peek() != null) {
+      Sets consider = toCheck.remove();
+      System.out.println(consider);
+      toCheck.add(consider.left);
+      toCheck.add(consider.right);
+    }
+
+
+//    boolean isL = true;
+//    while(s0.left != null && s0.right != null) {
+//      System.out.println(s0);
+//      if (isL) {
+//        s0 = s0.left;
+//        isL = false;
+//      } else {
+//        s0 = s0.right;
+//        isL = true;
+//      }
+//    }
   }
 }
