@@ -1,68 +1,39 @@
+// Implementation of the Set Interface using Red-Black Trees as the underlying data structure.
+// Every red-black tree upholds 2 invariants:
+//    1: No red node has a red parent.
+//    2: Every path from the root to an empty node contains the same number of black nodes (the
+//       black height of every path is identical)
+
+// ANALYSIS:
+//   Theta(1):      empty, size, hashCode
+//   Theta(lg(n)):  adjoin, min, max, contains
+//   Theta(nlg(n)): equals
+//   Theta(n^2):    toString
+
 public class Sets implements Set {
 
-  Sets left;
-  Sets right;
-  Integer val;
-  int size;
-  Color color;
-
-  // keep track of the product of all elts in the set to use as a hash.
-  // INVARIANT: hash is the product of all elements in the tree.
-  int hash;
-
-  static final Sets empty = new Sets(null, null, null, 0, null, 1);
+  private static final Sets empty = new Sets(null, null, null, 0, null, 1);
 
   // constant described in  Donald E. Knuth. Sorting and Searching,
   // volume 3 of The Art of Computer Programming. Addison-Wesley, 1973. Second edition, 1998.
-  static final double hashConstant = (Math.sqrt(5) - 1) / 2;
-  static final int hashSlots = (int)Math.pow(2, 30);  // want more than 1 billion slots to hash
-  // into.
+  private static final double hashConstant = (Math.sqrt(5) - 1) / 2;
 
-  public static Sets empty() {
-    return empty;
-  }
+  // want more than 1 billion slots to hash into.
+  private static final int hashSlots = (int)Math.pow(2, 30);
 
-  @Override
-  public Sets adjoin(int k) {
-    return makeBlack(ins(k));
-  }
+  // keep track of the product of all elts in the set to use as a hash.
+  // INVARIANT: hash is the product of all elements in the tree.
+  private int hash;
+  private Sets left;
+  private Sets right;
+  private Integer val;
+  private int size;
+  private Color color;
 
-  @Override
-  public int size() {
-    return size;
-  }
+  // Create a new Sets.
+  // PRECONDITION: values passed uphold the invariants of a red-black tree.
 
-  @Override
-  public boolean contains(int k2) {
-    if (size == 0)
-      return false;
-
-    return val == k2 || left.contains(k2) || right.contains(k2);
-  }
-
-  @Override
-  public int min() {
-    if (size == 0)
-      throw new UnsupportedOperationException("Cannot find min of empty set.");
-
-    if (left.size() == 0)
-      return val;
-    else
-      return left.min();
-  }
-
-  @Override
-  public int max() {
-    if (size == 0)
-      throw new UnsupportedOperationException("Cannot find max of empty set.");
-
-    if (right.size() == 0)
-      return val;
-    else
-      return right.max();
-  }
-
-  public Sets(Sets left, Sets right, Integer val, int size, Color color, int hash) {
+  private Sets(Sets left, Sets right, Integer val, int size, Color color, int hash) {
     this.left = left;
     this.right = right;
     this.val = val;
@@ -71,16 +42,15 @@ public class Sets implements Set {
     this.hash = hash;
   }
 
-  public Sets(Sets left, Sets right, Integer val, int size, Color color) {
-    this.left = left;
-    this.right = right;
-    this.val = val;
-    this.size = size;
-    this.color = color;
-    this.hash = Integer.MAX_VALUE;
+  // Return an empty Sets. Entry point to creating a Sets. Larger trees are created by calling
+  // the adjoin method of the empty set.
+
+  public static Sets empty() {
+    return empty;
   }
 
   // Given a set, return a new set with a black root node.
+
   private static Sets makeBlack(Sets s) {
     return new Sets(s.left, s.right, s.val, s.size, Color.BLACK, s.hash);
   }
@@ -96,26 +66,8 @@ public class Sets implements Set {
     return (int)(ans % hashSlots);  // if hashSlots < 2^31 - 1, no overflow.
   }
 
-  // insert the element into this set.
-  private Sets ins(int k) {
-    if (size == 0)
-      return new Sets(empty(), empty(), k, 1, Color.RED, bounded(k));
-
-    if (k == val)
-      return this;
-    if (k < val) {
-      Sets l = left.ins(k);
-      return balance(new Sets(l, right, val, size - left.size() + l.size(), color,
-          bounded(l.hash, right.hash, val)));
-    } else {
-      Sets r = right.ins(k);
-      return balance(new Sets(left, r, val, size - right.size() + r.size(), color,
-          bounded(left.hash, r.hash, val)));
-    }
-  }
-
-  // Given the components of a balanced Red-Black tree described in Okasaki fig. 1,
-  // Return a balanced Red-black tree that upholds the invariants.
+  // Given the Sets in the order described in Okasaki Fig. 1, return the balanced version of the
+  // sets.
 
   private static Sets balanced(Sets x, Sets y, Sets z, Sets a, Sets b, Sets c, Sets d) {
     Sets newX = new Sets(a, b, x.val, a.size + b.size + 1, Color.BLACK,
@@ -126,10 +78,10 @@ public class Sets implements Set {
         bounded(newX.hash, newZ.hash, y.val));
   }
 
-  // Given an arbitrary red-black tree s, return a balanced version of that tree that upholds the
-  // invariants.
+  // Given an arbitrary Sets that may or may not uphold the invariants of a Red-black tree, return a
+  // new tree that does uphold the invariants.
 
-  public static Sets balance(Sets s) {
+  private static Sets balance(Sets s) {
 
     // These sets correspond directly to the diagram in Okasaki Fig 1.
     Sets x;
@@ -190,6 +142,80 @@ public class Sets implements Set {
     return s;
   }
 
+  @Override
+  public Sets adjoin(int k) {
+    return makeBlack(ins(k));
+  }
+
+  @Override
+  public int size() {
+    return size;
+  }
+
+  @Override
+  public boolean contains(int k2) {
+    if (size == 0)
+      return false;
+
+    return val == k2 || left.contains(k2) || right.contains(k2);
+  }
+
+  @Override
+  public int min() {
+    if (size == 0)
+      throw new UnsupportedOperationException("Cannot find min of empty set.");
+
+    if (left.size() == 0)
+      return val;
+    else
+      return left.min();
+  }
+
+  // Given the components of a balanced Red-Black tree described in Okasaki fig. 1,
+  // Return a balanced Red-black tree that upholds the invariants.
+
+  @Override
+  public int max() {
+    if (size == 0)
+      throw new UnsupportedOperationException("Cannot find max of empty set.");
+
+    if (right.size() == 0)
+      return val;
+    else
+      return right.max();
+  }
+
+  // insert the element into this set.
+
+  private Sets ins(int k) {
+    if (size == 0)
+      return new Sets(empty(), empty(), k, 1, Color.RED, bounded(k));
+
+    if (k == val)
+      return this;
+    if (k < val) {
+      Sets l = left.ins(k);
+      return balance(new Sets(l, right, val, size - left.size() + l.size(), color,
+          bounded(l.hash, right.hash, val)));
+    } else {
+      Sets r = right.ins(k);
+      return balance(new Sets(left, r, val, size - right.size() + r.size(), color,
+          bounded(left.hash, r.hash, val)));
+    }
+  }
+
+  // Given a Set, is every element of this set in that set?
+
+  private boolean checkEquals(Set so) {
+    // Contains runs in Theta(lg(n)) time, and this function recurs n times, so this function
+    // runs in Theta(nlg(n)) time.
+    if (this.size() != 0) {
+      return so.contains(this.val) && this.left.checkEquals(so) && this.right.checkEquals(so);
+    }
+
+    return true;  // empty set is contained by every set.
+  }
+
   // Given another object, is it equivalent to this set?
   // Sets are equivalent if their sizes are equal,
   // and for every elt i in set 1, i is an elt of set 2
@@ -209,19 +235,8 @@ public class Sets implements Set {
     return false;
   }
 
-  // Given a Set, is every element of this set in that set?
-
-  private boolean checkEquals(Set so) {
-    // Contains runs in Theta(lg(n)) time, and this function recurs n times, so this function
-    // runs in Theta(nlg(n)) time.
-    if (this.size() != 0) {
-      return so.contains(this.val) && this.left.checkEquals(so) && this.right.checkEquals(so);
-    }
-
-    return true;  // empty set is contained by every set.
-  }
-
   // Add the value at this node to the array in its place in non-decreasing order.
+
   private void insertToArray(int[] acc) {
     if (this.size() == 0) {
       return; // base case adds nothing.
@@ -252,6 +267,7 @@ public class Sets implements Set {
   }
 
   // Return a string representing the Set in non-decreasing order.
+
   @Override
   public String toString() {
     // Strategy: Traverse the entire tree, inserting elements into an
@@ -284,6 +300,7 @@ public class Sets implements Set {
   //   2. If s1.equals(s2), then s1.hashcode == s2.hashcode
   //   3. If !s1.equals(s2), the probability that s1 and s2 hash to the same value is less than 1
   //      in a billion
+
   @Override
   public int hashCode() {
     // The method implements the multiplication method of hashing presented on pp. 264 ch 11
@@ -292,7 +309,9 @@ public class Sets implements Set {
     return (int)(hashSlots * (A - Math.floor(A))); // prime number > 1 billion
   }
 
-  public static enum Color {
+  // A node in a red-black tree must be either Red or Black.
+
+  private enum Color {
     BLACK, RED;
   }
 }
