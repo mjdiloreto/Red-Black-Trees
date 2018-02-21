@@ -12,7 +12,7 @@
 
 public class Sets implements Set {
 
-  private static final Sets empty = new Sets(null, null, null, 0, null, 1);
+  private static final Sets empty = new Sets(null, null, null, 0, null, 0);
 
   // constant described in  Donald E. Knuth. Sorting and Searching,
   // volume 3 of The Art of Computer Programming. Addison-Wesley, 1973. Second edition, 1998.
@@ -156,8 +156,10 @@ public class Sets implements Set {
   public boolean contains(int k2) {
     if (size == 0)
       return false;
-
-    return val == k2 || left.contains(k2) || right.contains(k2);
+    if(k2 < val)
+      return val == k2 || left.contains(k2);
+    else
+       return val == k2 || right.contains(k2);
   }
 
   @Override

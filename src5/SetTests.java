@@ -1,35 +1,35 @@
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-
-
-// Algebraic specification:
+//import static org.junit.Assert.assertNotEquals;
+//import static org.junit.Assert.assertEquals;
+//import org.junit.Test;
 //
-//     Sets.empty().size()  ==  0
-//     s.adjoin(k).size()  ==  s.size()              if s.contains(k)
-//     s.adjoin(k).size()  ==  1 + s.size()          if ! s.contains(k)
 //
-//     Sets.empty().contains(k2)  ==  false
-//     s.adjoin(k).contains(k2)  ==  true            if k == k2
-//     s.adjoin(k).contains(k2)  ==  s.contains(k2)  if k != k2
+//// Algebraic specification:
+////
+////     Sets.empty().size()  ==  0
+////     s.adjoin(k).size()  ==  s.size()              if s.contains(k)
+////     s.adjoin(k).size()  ==  1 + s.size()          if ! s.contains(k)
+////
+////     Sets.empty().contains(k2)  ==  false
+////     s.adjoin(k).contains(k2)  ==  true            if k == k2
+////     s.adjoin(k).contains(k2)  ==  s.contains(k2)  if k != k2
+////
+////     Sets.empty().adjoin(k).min()  ==  k
+////     s.adjoin(k).adjoin(k2).min()  ==  k2          if k2 <= s.adjoin(k).min()
+////     s.adjoin(k).adjoin(k2).min()
+////         ==  s.adjoin(k).min()                     if k2 > s.adjoin(k).min()
+////
+////     Sets.empty().adjoin(k).max()  ==  k
+////     s.adjoin(k).adjoin(k2).max()  ==  k2          if k2 >= s.adjoin(k).max()
+////     s.adjoin(k).adjoin(k2).max()
+////         ==  s.adjoin(k).max()                     if k2 < s.adjoin(k).max()
+////
 //
-//     Sets.empty().adjoin(k).min()  ==  k
-//     s.adjoin(k).adjoin(k2).min()  ==  k2          if k2 <= s.adjoin(k).min()
-//     s.adjoin(k).adjoin(k2).min()
-//         ==  s.adjoin(k).min()                     if k2 > s.adjoin(k).min()
 //
-//     Sets.empty().adjoin(k).max()  ==  k
-//     s.adjoin(k).adjoin(k2).max()  ==  k2          if k2 >= s.adjoin(k).max()
-//     s.adjoin(k).adjoin(k2).max()
-//         ==  s.adjoin(k).max()                     if k2 < s.adjoin(k).max()
+//// Fields have been made private. Inspection required for tests no longer possible.
 //
-
-
-// Fields have been made private. Inspection required for tests no longer possible.
-
-public class SetTests {
-//
+//public class SetTests {
 //  @Test
+//
 //  public void testEmpty() {
 //    assertEquals(true, Sets.empty().equals(Sets.empty()));
 //    assertEquals(0, Sets.empty().size());
@@ -295,4 +295,4 @@ public class SetTests {
 //    assertEquals(b1.right.color, Sets.Color.BLACK);
 //
 //  }
-}
+//}
